@@ -72,14 +72,14 @@ export default function Register() {
   })
 
   return (
-    <div className='bg-orange'>
+    <div className='bg-primaryColor'>
       <Helmet>
         <title>Đăng ký | Shopee Clone</title>
         <meta name='description' content='Đăng ký tài khoản vào dự án Shopee Clone' />
       </Helmet>
       <div className='container'>
-        <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
-          <div className='lg:col-span-2 lg:col-start-4'>
+        <div className='grid grid-cols-1 py-12 lg:grid-cols-4 lg:py-32 lg:pr-10'>
+          <div className='lg:col-span-2 lg:col-start-2'>
             <form className='rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng ký</div>
               <Input
@@ -89,16 +89,19 @@ export default function Register() {
                 className='mt-8'
                 errorMessage={errors.email?.message}
                 placeholder='Email'
+                htmlFor='email'
+                htmlText='Email'
               />
               <Input
                 name='password'
                 register={register}
                 type='password'
                 className='mt-2'
-                classNameEye='absolute right-[5px] h-5 w-5 cursor-pointer top-[12px]'
                 errorMessage={errors.password?.message}
                 placeholder='Password'
                 autoComplete='on'
+                htmlFor='password'
+                htmlText='Password'
               />
 
               <Input
@@ -106,15 +109,16 @@ export default function Register() {
                 register={register}
                 type='password'
                 className='mt-2'
-                classNameEye='absolute right-[5px] h-5 w-5 cursor-pointer top-[12px]'
                 errorMessage={errors.confirm_password?.message}
                 placeholder='Confirm Password'
                 autoComplete='on'
+                htmlFor='confirm_password'
+                htmlText='Confirm password'
               />
 
               <div className='mt-2'>
                 <Button
-                  className='flex w-full items-center justify-center bg-red-500 py-4 px-2 text-sm uppercase text-white hover:bg-red-600'
+                  className='flex w-full items-center justify-center bg-primaryColor py-4 px-2 text-sm uppercase text-white hover:opacity-90'
                   isLoading={registerAccountMutation.isLoading}
                   disabled={registerAccountMutation.isLoading}
                 >
@@ -123,7 +127,7 @@ export default function Register() {
               </div>
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>Bạn đã có tài khoản?</span>
-                <Link className='ml-1 text-red-400' to='/login'>
+                <Link className='ml-1 text-primaryColor' to='/login'>
                   Đăng nhập
                 </Link>
               </div>

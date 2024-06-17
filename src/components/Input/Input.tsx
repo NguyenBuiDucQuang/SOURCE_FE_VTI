@@ -9,6 +9,8 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register?: UseFormRegister<any>
   rules?: RegisterOptions
+  htmlFor?: string
+  htmlText?: string
 }
 
 export default function Input({
@@ -17,9 +19,11 @@ export default function Input({
   name,
   register,
   rules,
+  htmlFor,
+  htmlText,
   classNameInput = 'p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm',
   classNameError = 'mt-1 text-red-600 min-h-[1.25rem] text-sm',
-  classNameEye = 'absolute top-[8px] right-[5px] h-5 w-5 cursor-pointer',
+  classNameEye = 'absolute top-[34px] right-[5px] h-5 w-5 cursor-pointer',
   ...rest
 }: Props) {
   const [openEye, setOpenEye] = useState(false)
@@ -38,7 +42,10 @@ export default function Input({
 
   return (
     <div className={'relative ' + className}>
-      <input className={classNameInput} {...registerResult} {...rest} type={handleType()} />
+      <label htmlFor={htmlFor} className='mb-1 block'>
+        {htmlText}
+      </label>
+      <input className={classNameInput} {...registerResult} {...rest} id={htmlFor} type={handleType()} />
       {rest.type === 'password' && openEye && (
         <svg
           xmlns='http://www.w3.org/2000/svg'
