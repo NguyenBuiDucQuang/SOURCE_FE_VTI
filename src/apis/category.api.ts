@@ -11,8 +11,17 @@ const categoryApi = {
       params
     })
   },
+  detailCategory(id: number) {
+    return http.get<Category[]>(`${URL}/${id}`)
+  },
   deleteCategories(params: string) {
     return http.delete<SuccessResponse<Category[]>>(`${URL}/${params}`)
+  },
+  addCategory(body: Category) {
+    return http.post(URL, body)
+  },
+  updateCategory(id: number, body: Category) {
+    return http.put(`${URL}/${id}`, body)
   }
 }
 

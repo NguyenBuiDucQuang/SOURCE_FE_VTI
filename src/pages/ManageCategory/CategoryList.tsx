@@ -14,6 +14,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { toast } from 'react-toastify'
 import ModalAddCategory from './ModalAddCategory'
+import ModalUpdateCategory from './ModalUpdateCategory'
 const cx = classNames.bind(styles)
 
 type TableRowSelection<T> = TableProps<T>['rowSelection']
@@ -24,37 +25,6 @@ interface DataType {
   description: string
 }
 
-//////////////////////////////////////////////////////NAME COLUMN, CONFIG COLUMN///////////////////////////////////////////
-const columns: TableColumnsType<DataType> = [
-  {
-    title: 'ID',
-    dataIndex: 'key',
-    width: '10%'
-  },
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    width: '25%'
-  },
-  {
-    title: 'Description',
-    dataIndex: 'description',
-    width: '50%'
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    fixed: 'right',
-    render: (_, action) => (
-      <Space size='small' key={action.key}>
-        <Button type='text'>
-          <EditOutlined style={{ fontSize: '16px', color: '#4f80af' }} />
-        </Button>
-      </Space>
-    )
-  }
-]
-
 export default function CategoryList() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -62,6 +32,8 @@ export default function CategoryList() {
   const queryConfig = useQueryConfig()
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen2, setIsModalOpen2] = useState(false)
+  const [detail, setDetail] = useState<Category>()
   const navigate = useNavigate()
   const [searchText, setSearchText] = useState('')
 
@@ -108,7 +80,36 @@ export default function CategoryList() {
       }
     ]
   }
-
+  //////////////////////////////////////////////////////NAME COLUMN, CONFIG COLUMN///////////////////////////////////////////
+  const columns: TableColumnsType<DataType> = [
+    {
+      title: 'ID',
+      dataIndex: 'key',
+      width: '10%'
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      width: '25%'
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      width: '50%'
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      fixed: 'right',
+      render: (_, action) => (
+        <Space size='small' key={action.key}>
+          <Button type='text' onClick={() => handleModalOpen2(action.key as number)}>
+            <EditOutlined style={{ fontSize: '16px', color: '#4f80af' }} />
+          </Button>
+        </Space>
+      )
+    }
+  ]
   //////////////////////////////////////////////////////////// PUSH DATA ///////////////////////////////////////////////////////
   const { data: categoriesData } = useQuery({
     queryKey: ['categories', queryConfig],
@@ -167,12 +168,12 @@ export default function CategoryList() {
   const deleteCategoriesMutation = useMutation({
     mutationFn: (params: string) => categoryApi.deleteCategories(params),
     onSuccess: () => {
-      toast.success('Deleted successfully')
+      toast.success('Xóa thành công')
       queryClient.invalidateQueries(['categories', queryConfig])
       setSelectedRowKeys([])
     },
     onError: () => {
-      toast.error('Failed to delete')
+      toast.error('Xóa thất bại')
     }
   })
 
@@ -180,7 +181,7 @@ export default function CategoryList() {
     const params = selectedRowKeys.join(',')
     deleteCategoriesMutation.mutate(params)
   }
-
+  //////////////////////////////////////////////POPUP ADD/////////////////////////////////////
   const handleModalOpen = () => {
     setIsModalOpen(true)
   }
@@ -191,6 +192,21 @@ export default function CategoryList() {
 
   const handleModalCancel = () => {
     setIsModalOpen(false)
+  }
+  //////////////////////////////////////////////POPUP UPDATE/////////////////////////////////////
+  const handleModalOpen2 = async (id: number) => {
+    const data = await queryClient.fetchQuery(['categoryDetail', id], () => categoryApi.detailCategory(id))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setDetail(data.data as any)
+    setIsModalOpen2(true)
+  }
+
+  const handleModalOk2 = () => {
+    setIsModalOpen2(false)
+  }
+
+  const handleModalCancel2 = () => {
+    setIsModalOpen2(false)
   }
   return (
     <>
@@ -232,6 +248,12 @@ export default function CategoryList() {
       </div>
       <Table rowSelection={rowSelection} columns={columns} dataSource={data} pagination={pagination} />
       <ModalAddCategory isModalOpen={isModalOpen} handleOk={handleModalOk} handleCancel={handleModalCancel} />
+      <ModalUpdateCategory
+        isModalOpen={isModalOpen2}
+        handleOk={handleModalOk2}
+        handleCancel={handleModalCancel2}
+        detail={detail}
+      />
     </>
   )
 }

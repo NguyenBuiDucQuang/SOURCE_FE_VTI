@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosInstance } from 'axios'
 import HttpStatusCode from 'src/constants/httpStatusCode.enum'
 import { toast } from 'react-toastify'
 import { AuthResponse } from 'src/types/auth.type'
-import { clearLS, getAccessTokenFromLS, setAccessTokenToLS, setRoleToLS } from './auth'
+import { clearLS, getAccessTokenFromLS, setAccessTokenToLS, setProfileToLS, setRoleToLS } from './auth'
 import config from 'src/constants/config'
 import { URL_LOGIN, URL_LOGOUT, URL_REGISTER } from 'src/apis/auth.api'
 import { isAxiosUnauthorizedError } from './utils'
@@ -42,6 +42,7 @@ class Http {
 
           this.accessToken = data.token
           setAccessTokenToLS(this.accessToken)
+          setProfileToLS(response.data)
           setRoleToLS(data.role)
         } else if (url === URL_LOGOUT) {
           this.accessToken = ''
