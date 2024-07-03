@@ -49,7 +49,7 @@ export default function Header() {
   const purchasesInCart = purchasesInCartData?.data.data
 
   return (
-    <div className='text-000 bg-white pb-5 pt-2 font-semibold'>
+    <div className='bg-white pb-5 pt-2 font-semibold text-black'>
       <div className='container'>
         <div className='mt-4 grid grid-cols-12 items-end gap-4'>
           <Link to='/' className='col-span-2'>

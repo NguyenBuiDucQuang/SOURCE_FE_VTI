@@ -11,18 +11,27 @@ import omit from 'lodash/omit'
 import { schema, Schema } from 'src/utils/rules'
 import Input from 'src/components/Input'
 import authApi from 'src/apis/auth.api'
-import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
-import { ErrorResponse } from 'src/types/utils.type'
-import { useContext } from 'react'
-import { AppContext } from 'src/contexts/app.context'
+
 import Button from 'src/components/Button'
 import { Helmet } from 'react-helmet-async'
+import path from 'src/constants/path'
+import { toast } from 'react-toastify'
 
-type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
-const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
+type FormData = Pick<
+  Schema,
+  'email' | 'password' | 'confirm_password' | 'userName' | 'firstName' | 'lastName' | 'phoneNumber'
+>
+const registerSchema = schema.pick([
+  'email',
+  'password',
+  'confirm_password',
+  'userName',
+  'firstName',
+  'lastName',
+  'phoneNumber'
+])
 
 export default function Register() {
-  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -35,38 +44,31 @@ export default function Register() {
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
   })
-  const onSubmit = handleSubmit((data) => {
-    const body = omit(data, ['confirm_password'])
+  const onSubmit = handleSubmit(async (data) => {
+    const fixData: FormData = {
+      ...data,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      phoneNumber: parseInt(data.phoneNumber) as any
+    }
+    const userNameExist = await authApi.checkUserNameExist(data.userName)
+    if (userNameExist.data) {
+      toast.error('Tên người dùng đã tồn tại')
+      return
+    }
+
+    const emailExist = await authApi.checkEmailExist(data.email)
+    if (emailExist.data) {
+      toast.error('Email đã tồn tại')
+      return
+    }
+    const body = omit(fixData, ['confirm_password'])
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
-        setIsAuthenticated(true)
-        setProfile(data.data.data.user)
-        navigate('/')
+        toast.success('Đăng ký tài khoản mới thành công')
+        navigate(path.login)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
-          const formError = error.response?.data.data
-          if (formError) {
-            Object.keys(formError).forEach((key) => {
-              setError(key as keyof Omit<FormData, 'confirm_password'>, {
-                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
-                type: 'Server'
-              })
-            })
-          }
-          // if (formError?.email) {
-          //   setError('email', {
-          //     message: formError.email,
-          //     type: 'Server'
-          //   })
-          // }
-          // if (formError?.password) {
-          //   setError('password', {
-          //     message: formError.password,
-          //     type: 'Server'
-          //   })
-          // }
-        }
+        toast.error('Đăng ký tài khoản thất bại')
       }
     })
   })
@@ -83,14 +85,56 @@ export default function Register() {
             <form className='rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng ký</div>
               <Input
+                name='userName'
+                register={register}
+                type='text'
+                className='mt-8'
+                errorMessage={errors.userName?.message}
+                placeholder='Tên đăng nhập'
+                htmlFor='userName'
+                htmlText='Username'
+              />
+              <div className='flex w-full gap-4'>
+                <Input
+                  name='firstName'
+                  register={register}
+                  type='text'
+                  className='mt-2 w-full'
+                  errorMessage={errors.firstName?.message}
+                  placeholder='Họ'
+                  htmlFor='firstName'
+                  htmlText='First Name'
+                />
+                <Input
+                  name='lastName'
+                  register={register}
+                  type='text'
+                  className='mt-2 w-full'
+                  errorMessage={errors.lastName?.message}
+                  placeholder='Tên'
+                  htmlFor='lastName'
+                  htmlText='Last Name'
+                />
+              </div>
+              <Input
                 name='email'
                 register={register}
                 type='email'
-                className='mt-8'
+                className='mt-2'
                 errorMessage={errors.email?.message}
                 placeholder='Email'
                 htmlFor='email'
                 htmlText='Email'
+              />
+              <Input
+                name='phoneNumber'
+                register={register}
+                type='text'
+                className='mt-2'
+                errorMessage={errors.phoneNumber?.message}
+                placeholder='Số điện thoại'
+                htmlFor='phoneNumber'
+                htmlText='Phone Number'
               />
               <Input
                 name='password'

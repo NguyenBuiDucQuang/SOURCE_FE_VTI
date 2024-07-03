@@ -12,12 +12,20 @@ import RegisterLayout from './layouts/RegisterLayout'
 // import Cart from './pages/Cart'
 import CartLayout from './layouts/CartLayout'
 import UserLayout from './pages/User/layouts/UserLayout'
+import AdminLayout from './layouts/AdminLayout/AdminLayout'
+import Forget from './pages/Forget/Forget'
+import ActiveRegister from './pages/ActiveRegister'
+import ResetPageEmail from './pages/ResetPageEmail'
+
 // import ChangePassword from './pages/User/pages/ChangePassword'
 // import HistoryPurchase from './pages/User/pages/HistoryPurchase'
 // import NotFound from './pages/NotFound'
 
 const Login = lazy(() => import('./pages/Login'))
 const ProductList = lazy(() => import('./pages/ProductList'))
+const ProductListAdmin = lazy(() => import('./pages/ManageProduct'))
+const CategoryListAdmin = lazy(() => import('./pages/ManageCategory'))
+const AccountListAdmin = lazy(() => import('./pages/ManageAccount'))
 const Profile = lazy(() => import('./pages/User/pages/Profile'))
 const Register = lazy(() => import('./pages/Register'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
@@ -35,6 +43,19 @@ function RejectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
 
   return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
+}
+
+function AdminRoute() {
+  const { isAuthenticated, role } = useContext(AppContext)
+  const allowedRoles = 'Admin'
+
+  return isAuthenticated && allowedRoles.includes(role) ? <Outlet /> : <Navigate to='/forbidden' />
+}
+function CustomerRoute() {
+  const { isAuthenticated, role } = useContext(AppContext)
+  const allowedRoles = 'Customer'
+
+  return isAuthenticated && allowedRoles.includes(role) ? <Outlet /> : <Navigate to='/forbidden' />
 }
 
 export default function useRouteElements() {
@@ -62,12 +83,66 @@ export default function useRouteElements() {
               </Suspense>
             </RegisterLayout>
           )
+        },
+        {
+          path: path.forget,
+          element: (
+            <RegisterLayout>
+              <Suspense>
+                <Forget />
+              </Suspense>
+            </RegisterLayout>
+          )
+        },
+        {
+          path: path.reset,
+          element: <ResetPageEmail />
+        },
+        {
+          path: path.active,
+          element: <ActiveRegister />
         }
       ]
     },
     {
       path: '',
-      element: <ProtectedRoute />,
+      element: <AdminRoute />,
+      children: [
+        {
+          path: path.category,
+          element: (
+            <AdminLayout>
+              <Suspense>
+                <CategoryListAdmin />
+              </Suspense>
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.product,
+          element: (
+            <AdminLayout>
+              <Suspense>
+                <ProductListAdmin />
+              </Suspense>
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.account,
+          element: (
+            <AdminLayout>
+              <Suspense>
+                <AccountListAdmin />
+              </Suspense>
+            </AdminLayout>
+          )
+        }
+      ]
+    },
+    {
+      path: '',
+      element: <CustomerRoute />,
       children: [
         {
           path: path.cart,

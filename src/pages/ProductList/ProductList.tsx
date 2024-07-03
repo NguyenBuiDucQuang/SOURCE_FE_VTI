@@ -21,12 +21,12 @@ export default function ProductList() {
     staleTime: 3 * 60 * 1000
   })
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => {
-      return categoryApi.getCategories()
-    }
-  })
+  // const { data: categoriesData } = useQuery({
+  //   queryKey: ['categories'],
+  //   queryFn: () => {
+  //     return categoryApi.getCategories()
+  //   }
+  // })
 
   return (
     <div className='bg-gray-200 py-6'>

@@ -10,4 +10,7 @@ html {
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
+  width: 100%;
+  max-width: 1920px;
+  overflow-x: auto;
 }

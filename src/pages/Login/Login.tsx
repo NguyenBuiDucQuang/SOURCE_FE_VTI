@@ -4,19 +4,19 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { schema, Schema } from 'src/utils/rules'
 import { useMutation } from '@tanstack/react-query'
 import authApi from 'src/apis/auth.api'
-import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
-import { ErrorResponse } from 'src/types/utils.type'
 import Input from 'src/components/Input'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
 import { Helmet } from 'react-helmet-async'
+import path from 'src/constants/path'
+import { toast } from 'react-toastify'
 
-type FormData = Pick<Schema, 'email' | 'password'>
-const loginSchema = schema.pick(['email', 'password'])
+type FormData = Pick<Schema, 'username' | 'password'>
+const loginSchema = schema.pick(['username', 'password'])
 
 export default function Login() {
-  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const { setIsAuthenticated, setRole, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -34,21 +34,22 @@ export default function Login() {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
         setIsAuthenticated(true)
-        setProfile(data.data.data.user)
-        navigate('/')
+        const userRole = data.data.role
+        setProfile(data.data)
+        setRole(userRole)
+        switch (userRole) {
+          case 'Admin':
+            navigate(path.account)
+            break
+          case 'Customer':
+            navigate('/')
+            break
+          default:
+            navigate('/')
+        }
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
-          const formError = error.response?.data.data
-          if (formError) {
-            Object.keys(formError).forEach((key) => {
-              setError(key as keyof FormData, {
-                message: formError[key as keyof FormData],
-                type: 'Server'
-              })
-            })
-          }
-        }
+        toast.error('Tài khoản hoặc mật khẩu không đúng, vui lòng nhập lại!!!')
       }
     })
   })
@@ -65,14 +66,14 @@ export default function Login() {
             <form className='rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng nhập</div>
               <Input
-                name='email'
+                name='username'
                 register={register}
-                type='email'
+                type='text'
                 className='mt-8'
-                errorMessage={errors.email?.message}
-                placeholder='Email'
-                htmlFor='email'
-                htmlText='Email'
+                errorMessage={errors.username?.message}
+                placeholder='Username'
+                htmlFor='username'
+                htmlText='Username'
               />
               <Input
                 name='password'
@@ -99,6 +100,12 @@ export default function Login() {
                 <span className='text-gray-400'>Bạn chưa có tài khoản?</span>
                 <Link className='ml-1 text-primaryColor' to='/register'>
                   Đăng ký
+                </Link>
+              </div>
+              <div className='mt-8 flex items-center justify-center'>
+                <span className='text-gray-400'>Bạn quên mật khẩu?</span>
+                <Link className='ml-1 text-primaryColor' to='/forget'>
+                  Quên mật khẩu
                 </Link>
               </div>
             </form>

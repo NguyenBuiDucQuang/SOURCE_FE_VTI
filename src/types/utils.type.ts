@@ -1,6 +1,16 @@
 export interface SuccessResponse<Data> {
   message: string
   data: Data
+  content: Data
+  token: string
+  userName: string
+  email: string
+  firstName: string
+  lastName: string
+  phoneNumber: number
+  role: string
+  status: string
+  totalElements: number
 }
 export interface ErrorResponse<Data> {
   message: string
