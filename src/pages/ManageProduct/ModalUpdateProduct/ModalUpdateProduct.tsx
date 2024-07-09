@@ -1,11 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { DatePicker, Form, Input, Modal, Select } from 'antd'
+import { Button, DatePicker, Form, Image, Input, Modal, Select, Upload } from 'antd'
 // eslint-disable-next-line import/named
 import { BaseOptionType } from 'antd/es/select'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import fileApi from 'src/apis/file.api'
 import productApi from 'src/apis/product.api'
 import useQueryConfig from 'src/hooks/useQueryConfig'
+import { UploadOutlined } from '@ant-design/icons'
 import { Product } from 'src/types/product.type'
 
 interface ModalAddProductProps {
@@ -38,33 +40,63 @@ export default function ModalUpdateProduct({
   const [form] = Form.useForm()
   const queryConfig = useQueryConfig()
   const queryClient = useQueryClient()
-  const updateProductMutation = useMutation({
-    mutationFn: (body: Product) => productApi.updateProduct(detail?.id as number, body)
-  })
-  const onFinish = async (values: Product) => {
-    const fixValue = {
-      ...values,
-      id: detail?.id
+  const [file, setFile] = useState()
+  ////////////////////////////////////////////////// image //////////////////////////////////////////////
+  // Cập nhật hàm normFile
+  const normFile = (e: any) => {
+    console.log('Upload event:', e)
+    if (Array.isArray(e)) {
+      return e
     }
-    updateProductMutation.mutate(fixValue as Product, {
-      onSuccess: () => {
-        toast.success('Cập nhật sản phẩm thành công')
-        handleOk()
-        queryClient.invalidateQueries(['products', queryConfig])
-      },
-      onError: () => {
-        toast.error('Cập nhật sản phẩm thất bại')
+    const fileList = e && e.fileList
+    if (fileList && fileList.length > 0) {
+      setFile(fileList[0].originFileObj)
+      return fileList
+    }
+    setFile(null || undefined)
+    return []
+  }
+  const chooseImageMutation = useMutation({
+    mutationFn: (body) => fileApi.uploadFile(body as any)
+  })
+  ////////////////////////////////////////////////// update ///////////////////////////////////////////
+  const updateProductMutation = useMutation({
+    mutationFn: (body: Omit<Product, 'upload'>) => productApi.updateProduct(detail?.id as number, body)
+  })
+
+  // Cập nhật hàm onFinish
+  const onFinish = async (values: Product) => {
+    const config = {
+      image: file
+    }
+    try {
+      const uploadedImage = await chooseImageMutation.mutateAsync(config as any)
+      console.log(uploadedImage.data)
+      const fixData = {
+        ...values,
+        thumbnailUrl: uploadedImage.data
       }
-    })
+
+      await updateProductMutation.mutateAsync(fixData)
+      toast.success('Cập nhật sản phẩm thành công')
+      handleOk()
+      form.setFieldsValue('')
+      queryClient.invalidateQueries(['products', queryConfig])
+    } catch (error) {
+      toast.error('Cập nhật sản phẩm thất bại')
+    }
   }
 
   useEffect(() => {
-    console.log(categoriesData)
-
     if (detail) {
       form.setFieldsValue(detail)
     }
   }, [detail, form])
+
+  const handleCustomRequest = (options: any) => {
+    setFile(options.file)
+    options.onSuccess(null, options.file)
+  }
 
   return (
     <Modal title='Chỉnh sửa sản phẩm' visible={isModalOpen} onOk={form.submit} onCancel={handleCancel} width={1000}>
@@ -75,6 +107,28 @@ export default function ModalUpdateProduct({
         initialValues={{ name: '', description: '' }}
         validateTrigger='onSubmit'
       >
+        <Form.Item
+          name='upload'
+          label='Chọn ảnh sản phẩm'
+          valuePropName='fileList'
+          getValueFromEvent={normFile}
+          extra={!file ? 'Vui lòng chọn ảnh sản phẩm' : 'Đã chọn ảnh '}
+        >
+          <Upload name='logo' listType='picture' customRequest={handleCustomRequest}>
+            {!file && <Button icon={<UploadOutlined />}>Click to upload</Button>}
+          </Upload>
+        </Form.Item>
+
+        {!file && (
+          <Image
+            width={200}
+            height={200}
+            className='mx-auto block object-cover'
+            wrapperClassName='mx-auto flex items-center justify-center my-4'
+            src={`/src/assets/${detail?.thumbnailUrl}`}
+          />
+        )}
+
         <Form.Item label='Tên sản phẩm' name='name' rules={[{ required: true, message: 'Name is require!!!' }]}>
           <Input />
         </Form.Item>

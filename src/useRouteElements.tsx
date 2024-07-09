@@ -26,7 +26,7 @@ const ProductList = lazy(() => import('./pages/ProductList'))
 const ProductListAdmin = lazy(() => import('./pages/ManageProduct'))
 const CategoryListAdmin = lazy(() => import('./pages/ManageCategory'))
 const AccountListAdmin = lazy(() => import('./pages/ManageAccount'))
-const Profile = lazy(() => import('./pages/User/pages/Profile'))
+const Profile = lazy(() => import('./pages/Profile'))
 const Register = lazy(() => import('./pages/Register'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 const Cart = lazy(() => import('./pages/Cart'))
@@ -109,6 +109,16 @@ export default function useRouteElements() {
       element: <AdminRoute />,
       children: [
         {
+          path: path.profile,
+          element: (
+            <AdminLayout>
+              <Suspense>
+                <Profile />
+              </Suspense>
+            </AdminLayout>
+          )
+        },
+        {
           path: path.category,
           element: (
             <AdminLayout>
@@ -162,14 +172,14 @@ export default function useRouteElements() {
             </MainLayout>
           ),
           children: [
-            {
-              path: path.profile,
-              element: (
-                <Suspense>
-                  <Profile />
-                </Suspense>
-              )
-            },
+            // {
+            //   path: path.profile,
+            //   element: (
+            //     <Suspense>
+            //       <Profile />
+            //     </Suspense>
+            //   )
+            // },
             {
               path: path.changePassword,
               element: (

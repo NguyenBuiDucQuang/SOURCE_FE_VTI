@@ -10,6 +10,7 @@ export const URL_EMAIL_EXIST = 'users/email'
 export const URL_USERNAME_EXIST = 'users/userName'
 export const URL_ACTIVE_AUTOMATIC = 'users/activeUser'
 export const URL_RESET_PASSWORD = 'users/resetPassword'
+export const URL_GET_PROFILE = 'users/profile'
 
 const authApi = {
   registerAccount(body: User) {
@@ -35,6 +36,12 @@ const authApi = {
   },
   logout() {
     return http.post(URL_LOGOUT)
+  },
+  getProfile() {
+    return http.get<User>(URL_GET_PROFILE)
+  },
+  updateProfile(body: User) {
+    return http.put<User>(URL_GET_PROFILE, body)
   }
 }
 

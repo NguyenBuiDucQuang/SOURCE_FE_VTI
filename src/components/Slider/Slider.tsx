@@ -1,8 +1,8 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { UserOutlined, ProductOutlined, AppstoreOutlined, SolutionOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu, theme } from 'antd'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import path from 'src/constants/path'
 import styles from './Slider.module.css'
 import './Slider.css'
@@ -31,31 +31,46 @@ function getItem(
 
 export default function Slider({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
-  const [breadcrumbText, setBreadcrumbText] = useState('Quản lý tài khoản')
+  const [breadcrumbText, setBreadcrumbText] = useState('')
   const {
     token: { colorBgContainer, borderRadiusLG }
   } = theme.useToken()
 
+  const location = useLocation()
+
+  const determineKeyAndBreadcrumb = (pathname: string) => {
+    switch (pathname) {
+      case path.account:
+        return { key: '1', breadcrumb: 'Quản lý tài khoản' }
+      case path.product:
+        return { key: '2', breadcrumb: 'Quản lý sản phẩm' }
+      case path.category:
+        return { key: '3', breadcrumb: 'Quản lý danh mục' }
+      case path.order:
+        return { key: '4', breadcrumb: 'Quản lý đơn hàng' }
+      default:
+        return { key: '1', breadcrumb: 'Quản lý tài khoản' }
+    }
+  }
+
+  const { key: defaultSelectedKey, breadcrumb: defaultBreadcrumbText } = determineKeyAndBreadcrumb(location.pathname)
+
+  useEffect(() => {
+    setBreadcrumbText(defaultBreadcrumbText)
+  }, [location.pathname, defaultBreadcrumbText])
+
   const items: MenuItem[] = [
-    getItem(<NavLink to={path.account}>Quản lý tài khoản</NavLink>, '1', <UserOutlined />, undefined, () =>
-      setBreadcrumbText('Quản lý tài khoản')
-    ),
-    getItem(<NavLink to={path.product}>Quản lý sản phẩm</NavLink>, '2', <ProductOutlined />, undefined, () =>
-      setBreadcrumbText('Quản lý sản phẩm')
-    ),
-    getItem(<NavLink to={path.category}>Quản lý danh mục</NavLink>, '3', <AppstoreOutlined />, undefined, () =>
-      setBreadcrumbText('Quản lý danh mục')
-    ),
-    getItem(<NavLink to={path.category}>Quản lý đơn hàng</NavLink>, '4', <SolutionOutlined />, undefined, () =>
-      setBreadcrumbText('Quản lý đơn hàng')
-    )
+    getItem(<NavLink to={path.account}>Quản lý tài khoản</NavLink>, '1', <UserOutlined />),
+    getItem(<NavLink to={path.product}>Quản lý sản phẩm</NavLink>, '2', <ProductOutlined />),
+    getItem(<NavLink to={path.category}>Quản lý danh mục</NavLink>, '3', <AppstoreOutlined />),
+    getItem(<NavLink to={path.order}>Quản lý đơn hàng</NavLink>, '4', <SolutionOutlined />)
   ]
 
   return (
     <Layout className='h-screen w-full'>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} className={cx('menu')}>
         <div className='demo-logo-vertical' />
-        <Menu defaultSelectedKeys={['1']} mode='inline' items={items} />
+        <Menu defaultSelectedKeys={[defaultSelectedKey]} mode='inline' items={items} />
       </Sider>
       <Layout className='overflow-x-auto'>
         <Content style={{ margin: '0 16px' }}>

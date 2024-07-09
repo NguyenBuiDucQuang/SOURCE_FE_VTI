@@ -1,7 +1,7 @@
 const path = {
   home: '/',
   user: '/user',
-  profile: '/user/profile',
+  profile: '/profile',
   changePassword: '/user/password',
   historyPurchase: '/user/purchase',
   login: '/login',
@@ -11,6 +11,7 @@ const path = {
   productDetail: ':nameId',
   cart: '/cart',
   category: '/category',
+  order: '/order',
   product: '/product',
   account: '/account',
   active: '/active',

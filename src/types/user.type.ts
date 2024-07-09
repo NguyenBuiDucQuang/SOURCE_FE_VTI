@@ -8,4 +8,5 @@ export interface User {
   lastName?: string
   phoneNumber?: string
   password?: string
+  avatarUrl?: string
 }

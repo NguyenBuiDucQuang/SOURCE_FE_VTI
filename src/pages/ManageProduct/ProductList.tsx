@@ -53,16 +53,10 @@ export default function ProductList() {
       title: 'Ảnh sản phẩm',
       dataIndex: 'thumbnailUrl',
       width: '15%',
-      render: (url) => (
-        // action.thumbnail?.filename ? (
-        <img
-          // key={action.key}
-          width={100}
-          height={100}
-          style={{ objectFit: 'cover' }}
-          src={url}
-          alt=''
-        />
+      render: (_, action) => (
+        <>
+          <Image width={120} height={120} src={`/src/assets/${action.thumbnailUrl}`} className='object-cover' />
+        </>
       )
     },
     {
