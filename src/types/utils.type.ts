@@ -11,6 +11,9 @@ export interface SuccessResponse<Data> {
   role: string
   status: string
   totalElements: number
+  totalPages: number
+  size: number
+  number: number
 }
 export interface ErrorResponse<Data> {
   message: string
