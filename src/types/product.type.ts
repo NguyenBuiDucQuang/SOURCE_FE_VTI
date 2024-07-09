@@ -1,22 +1,31 @@
 export interface Product {
+  // id: number
+  // thumbnailURL: string
+  // images: string[]
+  // price: number
+  // rating: number
+  // price_before_discount: number
+  // quantity: number
+  // sold: number
+  // view: number
+  // name: string
+  // description: string
+  // category: {
+  //   _id: string
+  //   name: string
+  // }
+  // image: string
+  // createdAt: string
+  // updatedAt: string
+
   id: number
-  thumbnailURL: string
-  images: string[]
-  price: number
-  rating: number
-  price_before_discount: number
-  quantity: number
-  sold: number
-  view: number
+  thumbnailUrl: string
   name: string
+  number_of_products: number
+  category_name: string
+  category_id: number
+  price: number
   description: string
-  category: {
-    _id: string
-    name: string
-  }
-  image: string
-  createdAt: string
-  updatedAt: string
 }
 
 export interface ProductList {
@@ -28,7 +37,7 @@ export interface ProductList {
   }
 }
 
-export interface ProductListConfig {
+export interface ParamsConfig {
   page?: number | string
   size?: number | string
   search?: string

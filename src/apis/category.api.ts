@@ -1,12 +1,12 @@
 import http from 'src/utils/http'
 import { Category } from 'src/types/category.type'
 import { SuccessResponse } from 'src/types/utils.type'
-import { ProductListConfig } from 'src/types/product.type'
+import { ParamsConfig } from 'src/types/product.type'
 
 const URL = 'categorys'
 
 const categoryApi = {
-  getCategories(params: ProductListConfig) {
+  getCategories(params: ParamsConfig) {
     return http.get<SuccessResponse<Category[]>>(URL, {
       params
     })

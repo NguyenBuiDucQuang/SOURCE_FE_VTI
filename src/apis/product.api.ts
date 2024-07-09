@@ -1,12 +1,11 @@
-import { update } from 'lodash'
-import { Product, ProductList, ProductListConfig } from 'src/types/product.type'
+import { ParamsConfig, Product, ProductList } from 'src/types/product.type'
 import { SuccessResponse } from 'src/types/utils.type'
 import http from 'src/utils/http'
 
 const URL = 'products'
 const productApi = {
-  getProducts(params: ProductListConfig) {
-    return http.get<SuccessResponse<ProductList>>(URL, {
+  getProducts(params: ParamsConfig) {
+    return http.get<SuccessResponse<Product[]>>(URL, {
       params
     })
   },

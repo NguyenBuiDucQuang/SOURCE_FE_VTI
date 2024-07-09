@@ -8,21 +8,24 @@ import { EditOutlined } from '@ant-design/icons'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import productApi from 'src/apis/product.api'
-import { Product, ProductListConfig } from 'src/types/product.type'
+import { ParamsConfig, Product } from 'src/types/product.type'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { toast } from 'react-toastify'
 import ModalAddProduct from './ModalAddProduct'
 import ModalUpdateProduct from './ModalUpdateProduct'
+import categoryApi from 'src/apis/category.api'
 const cx = classNames.bind(styles)
 
 type TableRowSelection<T> = TableProps<T>['rowSelection']
 
 interface DataType {
   key: React.Key
-  thumbnailURL: string
+  thumbnailUrl: string
   name: string
+  number_of_products: number
   category_name: string
+  category_id: number
   price: number
   description: string
 }
@@ -107,9 +110,9 @@ export default function ProductList() {
     setSelectedRowKeys(newSelectedRowKeys)
   }
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`)
-  }
+  // const handleChange = (value: string) => {
+  //   console.log(`selected ${value}`)
+  // }
 
   const rowSelection: TableRowSelection<DataType> = {
     selectedRowKeys,
@@ -152,19 +155,35 @@ export default function ProductList() {
   const { data: productsData } = useQuery({
     queryKey: ['products', queryConfig],
     queryFn: () => {
-      return productApi.getProducts(queryConfig as ProductListConfig)
+      return productApi.getProducts(queryConfig as ParamsConfig)
     }
   })
 
   const data: DataType[] =
-    //  @ts-ignore
-    productsData?.data.content.map((product: Product) => ({
+    productsData?.data.content.map((product) => ({
       key: product.id,
       name: product.name,
       thumbnailUrl: product.thumbnailUrl,
       category_name: product.category_name,
       price: product.price,
-      description: product.description
+      description: product.description,
+      number_of_products: product.number_of_products,
+      category_id: product.category_id
+    })) || []
+
+  //////////////////////////////////////////////////////////// PUSH CATEGORY DATA ///////////////////////////////////////////////////////
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories', queryConfig],
+    queryFn: () => {
+      return categoryApi.getCategories({ size: Number.MAX_SAFE_INTEGER })
+    }
+  })
+
+  const categoryOptions =
+    categoriesData?.data.content.map((category) => ({
+      value: category.id,
+      label: category.name
     })) || []
 
   //////////////////////////////////////////////////////////// PAGINATE ///////////////////////////////////////////////////////
@@ -192,6 +211,10 @@ export default function ProductList() {
         sort: `id,${value}`
       }).toString()
     })
+  }
+
+  const handleChangehandleChange2 = (value: string) => {
+    console.log(value)
   }
 
   const handleSearch = (value: string) => {
@@ -262,17 +285,13 @@ export default function ProductList() {
         onSearch={handleSearch}
       />
       <div className={cx('group__select', 'mt-4 mb-4 flex items-center justify-between gap-4')}>
-        {/* <Select
+        <Select
           placeholder='--Danh mục--'
-          onChange={handleChangehandleChange}
+          onChange={handleChangehandleChange2}
           size='large'
-          options={[
-            { value: 'category_name: Nike', label: 'NIKE' },
-            { value: 'category_name: ADIDAS', label: 'ADIDAS' },
-            { value: 'category_name: FILA', label: 'FILA' }
-          ]}
+          options={categoryOptions}
           className='w-1/2'
-        /> */}
+        />
         <Select
           placeholder='--Sắp xếp theo ngày--'
           onChange={handleChangehandleChange}
@@ -301,16 +320,19 @@ export default function ProductList() {
         </Space>
       </div>
       <Table rowSelection={rowSelection} columns={columns} dataSource={data} pagination={pagination} />
-      <ModalAddProduct isModalOpen={isModalOpen} handleOk={handleModalOk} handleCancel={handleModalCancel} />
+      <ModalAddProduct
+        isModalOpen={isModalOpen}
+        handleOk={handleModalOk}
+        handleCancel={handleModalCancel}
+        categoriesData={categoryOptions}
+      />
       <ModalUpdateProduct
         isModalOpen={isModalOpen2}
         handleOk={handleModalOk2}
         handleCancel={handleModalCancel2}
         detail={detail}
+        categoriesData={categoryOptions}
       />
     </>
   )
-}
-function handleModalOpen2(arg0: number): void {
-  throw new Error('Function not implemented.')
 }

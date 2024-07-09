@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Form, Input, Modal, Select } from 'antd'
+// eslint-disable-next-line import/named
+import { BaseOptionType } from 'antd/es/select'
 import { toast } from 'react-toastify'
 import productApi from 'src/apis/product.api'
 import useQueryConfig from 'src/hooks/useQueryConfig'
@@ -9,6 +11,7 @@ interface ModalAddProductProps {
   isModalOpen: boolean
   handleOk: () => void
   handleCancel: () => void
+  categoriesData: BaseOptionType[]
 }
 
 const formItemLayout = {
@@ -22,7 +25,7 @@ const formItemLayout = {
   }
 }
 
-export default function ModalAddProduct({ isModalOpen, handleOk, handleCancel }: ModalAddProductProps) {
+export default function ModalAddProduct({ isModalOpen, handleOk, handleCancel, categoriesData }: ModalAddProductProps) {
   const [form] = Form.useForm()
   const queryConfig = useQueryConfig()
   const queryClient = useQueryClient()
@@ -67,14 +70,13 @@ export default function ModalAddProduct({ isModalOpen, handleOk, handleCancel }:
         >
           <Input />
         </Form.Item>
-        <Form.Item label='Nhãn hàng' name='category_id' rules={[{ required: true, message: 'Please input!' }]}>
-          <Select
-            options={[
-              { value: '1', label: 'Nike' },
-              { value: '2', label: 'ADIDAS' },
-              { value: '3', label: 'FILA' }
-            ]}
-          />
+        <Form.Item
+          label='Nhãn hàng'
+          name='category_id'
+          rules={[{ required: true, message: 'Please input!' }]}
+          initialValue={categoriesData[0]}
+        >
+          <Select options={categoriesData} />
         </Form.Item>
         <Form.Item label='Ảnh sản phẩm' name='thumbnailUrl' rules={[{ required: true, message: 'Please input!' }]}>
           <Input />

@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { DatePicker, Form, Input, Modal, Select } from 'antd'
+// eslint-disable-next-line import/named
+import { BaseOptionType } from 'antd/es/select'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import productApi from 'src/apis/product.api'
@@ -11,6 +13,7 @@ interface ModalAddProductProps {
   handleOk: () => void
   handleCancel: () => void
   detail?: Product
+  categoriesData: BaseOptionType[]
 }
 const { RangePicker } = DatePicker
 
@@ -25,7 +28,13 @@ const formItemLayout = {
   }
 }
 
-export default function ModalUpdateProduct({ isModalOpen, handleOk, handleCancel, detail }: ModalAddProductProps) {
+export default function ModalUpdateProduct({
+  isModalOpen,
+  handleOk,
+  handleCancel,
+  detail,
+  categoriesData
+}: ModalAddProductProps) {
   const [form] = Form.useForm()
   const queryConfig = useQueryConfig()
   const queryClient = useQueryClient()
@@ -50,6 +59,8 @@ export default function ModalUpdateProduct({ isModalOpen, handleOk, handleCancel
   }
 
   useEffect(() => {
+    console.log(categoriesData)
+
     if (detail) {
       form.setFieldsValue(detail)
     }
@@ -78,13 +89,7 @@ export default function ModalUpdateProduct({ isModalOpen, handleOk, handleCancel
           <Input />
         </Form.Item>
         <Form.Item label='Nhãn hàng' name='category_id' rules={[{ required: true, message: 'Please input!' }]}>
-          <Select
-            options={[
-              { value: '1', label: 'Nike' },
-              { value: '2', label: 'ADIDAS' },
-              { value: '3', label: 'FILA' }
-            ]}
-          />
+          <Select options={categoriesData} />
         </Form.Item>
         <Form.Item label='Ảnh sản phẩm' name='thumbnailUrl' rules={[{ required: true, message: 'Please input!' }]}>
           <Input />

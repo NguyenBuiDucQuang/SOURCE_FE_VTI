@@ -67,11 +67,11 @@ class Http {
         // - Token hết hạn*
 
         // Nếu là lỗi 401
-        if (isAxiosUnauthorizedError<ErrorResponse<{ name: string; message: string }>>(error)) {
-          clearLS()
-          this.accessToken = ''
-          toast.error('Lỗi ủy quyền')
-        }
+        // if (isAxiosUnauthorizedError<ErrorResponse<{ name: string; message: string }>>(error)) {
+        //   clearLS()
+        //   this.accessToken = ''
+        //   toast.error('Lỗi ủy quyền')
+        // }
         return Promise.reject(error)
       }
     )

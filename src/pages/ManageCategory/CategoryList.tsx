@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import categoryApi from 'src/apis/category.api'
 import { Category } from 'src/types/category.type'
 import useQueryConfig from 'src/hooks/useQueryConfig'
-import { ProductListConfig } from 'src/types/product.type'
+import { ParamsConfig } from 'src/types/product.type'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { toast } from 'react-toastify'
@@ -114,7 +114,7 @@ export default function CategoryList() {
   const { data: categoriesData } = useQuery({
     queryKey: ['categories', queryConfig],
     queryFn: () => {
-      return categoryApi.getCategories(queryConfig as ProductListConfig)
+      return categoryApi.getCategories(queryConfig as ParamsConfig)
     }
   })
 
