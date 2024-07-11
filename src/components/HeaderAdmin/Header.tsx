@@ -16,19 +16,16 @@ import { locales } from 'src/i18n/i18n'
 import { clearLS } from 'src/utils/auth'
 
 export default function Header() {
-  const { setIsAuthenticated, isAuthenticated, profile, setProfile } = useContext(AppContext)
-  const { onSubmitSearch, register } = useSearchProducts()
+  const { setIsAuthenticated, isAuthenticated, profile } = useContext(AppContext)
 
   const { i18n } = useTranslation()
   const currentLanguage = locales[i18n.language as keyof typeof locales]
-
-  const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const handleLogout = () => {
     setIsAuthenticated(false)
     clearLS()
-    navigate(path.login)
+    navigate(path.home)
   }
 
   const changeLanguage = (lng: 'en' | 'vi') => {
@@ -38,7 +35,7 @@ export default function Header() {
   return (
     <div className=' px-5 pb-5 pt-2 font-semibold text-white'>
       <div className='mt-4 flex items-center justify-between'>
-        <Link to='/' className='w-48'>
+        <Link to={path.account} className='w-48'>
           <img src={icon} alt='icon' className='w-full' />
         </Link>
         <div className=''>

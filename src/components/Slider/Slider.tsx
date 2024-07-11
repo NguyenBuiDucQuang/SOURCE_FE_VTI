@@ -70,7 +70,12 @@ export default function Slider({ children }: { children: ReactNode }) {
     <Layout className='h-screen w-full'>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} className={cx('menu')}>
         <div className='demo-logo-vertical' />
-        <Menu defaultSelectedKeys={[defaultSelectedKey]} mode='inline' items={items} />
+        <Menu
+          defaultSelectedKeys={[defaultSelectedKey]}
+          selectedKeys={[defaultSelectedKey]}
+          mode='inline'
+          items={items}
+        />
       </Sider>
       <Layout className='overflow-x-auto'>
         <Content style={{ margin: '0 16px' }}>

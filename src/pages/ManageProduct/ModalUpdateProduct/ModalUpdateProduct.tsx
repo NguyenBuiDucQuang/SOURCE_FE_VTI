@@ -66,21 +66,21 @@ export default function ModalUpdateProduct({
 
   // Cập nhật hàm onFinish
   const onFinish = async (values: Product) => {
-    const config = {
-      image: file
-    }
     try {
-      const uploadedImage = await chooseImageMutation.mutateAsync(config as any)
-      console.log(uploadedImage.data)
+      let uploadedImage = { data: detail?.thumbnailUrl }
+      if (file) {
+        const config = { image: file }
+        uploadedImage = await chooseImageMutation.mutateAsync(config as any)
+      }
       const fixData = {
         ...values,
         thumbnailUrl: uploadedImage.data
       }
 
-      await updateProductMutation.mutateAsync(fixData)
+      await updateProductMutation.mutateAsync(fixData as any)
       toast.success('Cập nhật sản phẩm thành công')
       handleOk()
-      form.setFieldsValue('')
+      form.resetFields()
       queryClient.invalidateQueries(['products', queryConfig])
     } catch (error) {
       toast.error('Cập nhật sản phẩm thất bại')
@@ -126,6 +126,7 @@ export default function ModalUpdateProduct({
             className='mx-auto block object-cover'
             wrapperClassName='mx-auto flex items-center justify-center my-4'
             src={`/src/assets/${detail?.thumbnailUrl}`}
+            alt={detail?.thumbnailUrl}
           />
         )}
 
@@ -144,9 +145,6 @@ export default function ModalUpdateProduct({
         </Form.Item>
         <Form.Item label='Nhãn hàng' name='category_id' rules={[{ required: true, message: 'Please input!' }]}>
           <Select options={categoriesData} />
-        </Form.Item>
-        <Form.Item label='Ảnh sản phẩm' name='thumbnailUrl' rules={[{ required: true, message: 'Please input!' }]}>
-          <Input />
         </Form.Item>
         <Form.Item label='Mô tả' name='description' rules={[{ required: true, message: 'Please input!' }]}>
           <Input.TextArea autoSize={{ minRows: 5, maxRows: 10 }} />

@@ -5,12 +5,12 @@ import http from 'src/utils/http'
 const URL = 'products'
 const productApi = {
   getProducts(params: ParamsConfig) {
-    return http.get<SuccessResponse<Product[]>>(URL, {
+    return http.get<SuccessResponse<Product[]>>(`${URL}/list`, {
       params
     })
   },
   detailProduct(id: number) {
-    return http.get<Product[]>(`${URL}/${id}`)
+    return http.get<Product>(`${URL}/${id}`)
   },
   deleteProducts(params: string) {
     return http.delete<SuccessResponse<Product[]>>(`${URL}/${params}`)

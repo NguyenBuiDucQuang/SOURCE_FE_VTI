@@ -41,7 +41,8 @@ export interface ParamsConfig {
   page?: number | string
   size?: number | string
   search?: string
-  min?: number | string
-  max?: number | string
+  minPrice?: number | string
+  maxPrice?: number | string
   sort?: 'asc' | 'desc'
+  categoryId?: number | string
 }

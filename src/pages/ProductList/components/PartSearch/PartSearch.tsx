@@ -23,6 +23,16 @@ export default function PartSearch() {
     })
   }
 
+  const handleChangehandleChange2 = (value: string) => {
+    navigate({
+      pathname: '',
+      search: createSearchParams({
+        ...queryConfig,
+        categoryId: value
+      }).toString()
+    })
+  }
+
   const handleSearch = (value: string) => {
     navigate({
       pathname: '',
@@ -45,8 +55,16 @@ export default function PartSearch() {
       value: category.id,
       label: category.name
     })) || []
+
+  categoryOptions.unshift({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    value: '',
+    label: 'Tất cả danh mục'
+  })
+
   return (
-    <>
+    <div className='col-span-9 col-start-4'>
       <Search
         placeholder='input search text'
         allowClear
@@ -68,7 +86,7 @@ export default function PartSearch() {
         />
         <Select
           placeholder='--Danh mục--'
-          // onChange={handleChangehandleChange2}
+          onChange={handleChangehandleChange2}
           showSearch
           filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
           size='large'
@@ -76,6 +94,6 @@ export default function PartSearch() {
           className='w-1/2'
         />
       </div>
-    </>
+    </div>
   )
 }

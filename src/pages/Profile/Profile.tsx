@@ -6,10 +6,12 @@ import { User } from 'src/types/user.type'
 import { UploadOutlined } from '@ant-design/icons'
 import fileApi from 'src/apis/file.api'
 import { toast } from 'react-toastify'
+import { useLocation } from 'react-router-dom'
 
 export default function Profile() {
   const [profileData, setDataProfileData] = useState<User>()
   const queryClient = useQueryClient()
+  const location = useLocation()
   const { data: profileDataApi } = useQuery({
     queryKey: ['profile'],
     queryFn: () => {
@@ -71,7 +73,7 @@ export default function Profile() {
     options.onSuccess(null, options.file)
   }
   return (
-    <>
+    <div className={location.pathname === '/profile' ? '' : 'container'}>
       <h2 className='mb-8 text-3xl'>Thông tin người dùng</h2>
       <Form onFinish={onFinish} validateTrigger='onSubmit' className='w-1/2'>
         <Form.Item
@@ -82,7 +84,7 @@ export default function Profile() {
           extra={!file ? 'Vui lòng chọn ảnh cài avatar' : 'Đã chọn ảnh '}
         >
           <Upload name='logo' listType='picture' customRequest={handleCustomRequest}>
-            {!file && <Button icon={<UploadOutlined />}>Click to upload</Button>}
+            {!file && <Button icon={<UploadOutlined />}>Chọn ảnh để cập nhật avatar</Button>}
           </Upload>
         </Form.Item>
         <Button htmlType='submit' className='mb-4'>
@@ -123,6 +125,6 @@ export default function Profile() {
           <p className='my-4 text-xl'>{profileData?.role}</p>
         </div>
       </div>
-    </>
+    </div>
   )
 }

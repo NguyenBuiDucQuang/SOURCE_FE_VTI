@@ -55,19 +55,30 @@ export default function ProductList() {
       width: '15%',
       render: (_, action) => (
         <>
-          <Image width={120} height={120} src={`/src/assets/${action.thumbnailUrl}`} className='object-cover' />
+          <Image
+            width={120}
+            height={120}
+            src={`/src/assets/${action.thumbnailUrl}`}
+            className='object-cover'
+            alt={action.thumbnailUrl}
+          />
         </>
       )
     },
     {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
-      width: '30%'
+      width: '25%'
     },
     {
       title: 'Nhãn hàng',
       dataIndex: 'category_name',
-      width: '30%'
+      width: '25%'
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'number_of_products',
+      width: '10%'
     },
     {
       title: 'Giá',
@@ -180,6 +191,13 @@ export default function ProductList() {
       label: category.name
     })) || []
 
+  categoryOptions.unshift({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    value: '',
+    label: 'Tất cả danh mục'
+  })
+
   //////////////////////////////////////////////////////////// PAGINATE ///////////////////////////////////////////////////////
   const pagination = {
     current: currentPage,
@@ -208,7 +226,13 @@ export default function ProductList() {
   }
 
   const handleChangehandleChange2 = (value: string) => {
-    console.log(value)
+    navigate({
+      pathname: path.product,
+      search: createSearchParams({
+        ...queryConfig,
+        categoryId: value
+      }).toString()
+    })
   }
 
   const handleSearch = (value: string) => {

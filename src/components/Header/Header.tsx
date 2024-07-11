@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
 import Popover from '../Popover'
@@ -13,40 +13,35 @@ import useSearchProducts from 'src/hooks/useSearchProducts'
 import authApi from 'src/apis/auth.api'
 import { useTranslation } from 'react-i18next'
 import { locales } from 'src/i18n/i18n'
+import { clearLS } from 'src/utils/auth'
 
 const MAX_PURCHASES = 5
 export default function Header() {
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
-  const { onSubmitSearch, register } = useSearchProducts()
+  const navigate = useNavigate()
 
   const { i18n } = useTranslation()
   const currentLanguage = locales[i18n.language as keyof typeof locales]
 
   const queryClient = useQueryClient()
-  const logoutMutation = useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: () => {
-      setIsAuthenticated(false)
-      setProfile(null)
-      queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
-    }
-  })
 
   const handleLogout = () => {
-    logoutMutation.mutate()
+    setIsAuthenticated(false)
+    clearLS()
+    navigate(path.home)
   }
 
   const changeLanguage = (lng: 'en' | 'vi') => {
     i18n.changeLanguage(lng)
   }
 
-  const { data: purchasesInCartData } = useQuery({
-    queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
-    enabled: isAuthenticated
-  })
+  // const { data: purchasesInCartData } = useQuery({
+  //   queryKey: ['purchases', { status: purchasesStatus.inCart }],
+  //   queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
+  //   enabled: isAuthenticated
+  // })
 
-  const purchasesInCart = purchasesInCartData?.data.data
+  // const purchasesInCart = purchasesInCartData?.data.data
 
   return (
     <div className='bg-white pb-5 pt-2 font-semibold text-black'>
@@ -110,7 +105,7 @@ export default function Header() {
                   renderPopover={
                     <div className='relative rounded-sm border border-gray-200 bg-white shadow-md'>
                       <Link
-                        to={path.profile}
+                        to={path.profileHome}
                         className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
                       >
                         Tài khoản của tôi
@@ -130,13 +125,13 @@ export default function Header() {
                     </div>
                   }
                 >
-                  <div className='mr-2 h-6 w-6 flex-shrink-0'>
+                  {/* <div className='mr-2 h-6 w-6 flex-shrink-0'>
                     <img
                       src={getAvatarUrl(profile?.avatar)}
                       alt='avatar'
                       className='h-full w-full rounded-full object-cover'
                     />
-                  </div>
+                  </div> */}
                   <div>{profile?.email}</div>
                 </Popover>
               )}
@@ -157,7 +152,7 @@ export default function Header() {
             <Popover
               renderPopover={
                 <div className='relative  max-w-[400px] rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
-                  {purchasesInCart && purchasesInCart.length > 0 ? (
+                  {/* {purchasesInCart && purchasesInCart.length > 0 ? (
                     <div className='p-2'>
                       <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
                       <div className='mt-5'>
@@ -192,12 +187,12 @@ export default function Header() {
                         </Link>
                       </div>
                     </div>
-                  ) : (
-                    <div className='flex h-[300px] w-[300px] flex-col items-center justify-center p-2'>
-                      <img src={noproduct} alt='no purchase' className='h-24 w-24' />
-                      <div className='mt-3 capitalize'>Chưa có sản phẩm</div>
-                    </div>
-                  )}
+                  ) : ( */}
+                  <div className='flex h-[300px] w-[300px] flex-col items-center justify-center p-2'>
+                    <img src={noproduct} alt='no purchase' className='h-24 w-24' />
+                    <div className='mt-3 capitalize'>Chưa có sản phẩm</div>
+                  </div>
+                  {/* )} */}
                 </div>
               }
             >
@@ -216,11 +211,11 @@ export default function Header() {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'
                   />
                 </svg>
-                {purchasesInCart && purchasesInCart.length > 0 && (
+                {/* {purchasesInCart && purchasesInCart.length > 0 && (
                   <span className='absolute top-[-5px] left-[17px] rounded-full bg-white px-[9px] py-[1px] text-xs text-orange '>
                     {purchasesInCart?.length}
                   </span>
-                )}
+                )} */}
               </Link>
             </Popover>
           </div>

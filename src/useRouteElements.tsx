@@ -155,6 +155,16 @@ export default function useRouteElements() {
       element: <CustomerRoute />,
       children: [
         {
+          path: path.profileHome,
+          element: (
+            <MainLayout>
+              <Suspense>
+                <Profile />
+              </Suspense>
+            </MainLayout>
+          )
+        },
+        {
           path: path.cart,
           element: (
             <CartLayout>
@@ -171,6 +181,7 @@ export default function useRouteElements() {
               <UserLayout />
             </MainLayout>
           ),
+
           children: [
             // {
             //   path: path.profile,
@@ -180,6 +191,7 @@ export default function useRouteElements() {
             //     </Suspense>
             //   )
             // },
+
             {
               path: path.changePassword,
               element: (

@@ -6,6 +6,7 @@ import useQueryConfig from 'src/hooks/useQueryConfig'
 import { ParamsConfig } from 'src/types/product.type'
 import Product from './components/Product/Product'
 import PartSearch from './components/PartSearch'
+import AsideFilter from './components/AsideFilter'
 
 export default function ProductList() {
   const queryConfig = useQueryConfig()
@@ -25,9 +26,14 @@ export default function ProductList() {
         <meta name='description' content='Trang chủ dự án Shopee Clone' />
       </Helmet>
       <div className='container'>
-        <PartSearch />
+        <div className='grid grid-cols-12 gap-6'>
+          <PartSearch />
+        </div>
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>
+            <div className='col-span-3'>
+              <AsideFilter queryConfig={queryConfig} />
+            </div>
             <div className='col-span-9'>
               <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
                 {productsData.data.content.map((product) => (

@@ -1,10 +1,10 @@
-import { ProductListConfig } from 'src/types/product.type'
+import { ParamsConfig } from 'src/types/product.type'
 import omitBy from 'lodash/omitBy'
 import isUndefined from 'lodash/isUndefined'
 import useQueryParams from './useQueryParams'
 
 export type QueryConfig = {
-  [key in keyof ProductListConfig]: string
+  [key in keyof ParamsConfig]: string
 }
 
 export default function useQueryConfig() {
@@ -14,7 +14,10 @@ export default function useQueryConfig() {
       page: queryParams.page || '1',
       size: queryParams.size || '10',
       search: queryParams.search,
-      sort: queryParams.sort
+      sort: queryParams.sort,
+      minPrice: queryParams.minPrice,
+      maxPrice: queryParams.maxPrice,
+      categoryId: queryParams.categoryId
     },
     isUndefined
   )
