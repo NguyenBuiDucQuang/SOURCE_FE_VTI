@@ -86,13 +86,21 @@ export default function ProductDetail() {
 
   const buyNow = async () => {
     try {
-      const res = await addToCartMutation.mutateAsync({ user_id: profile?.id })
+      if (!profile?.id) {
+        navigate(path.login)
+        // Show toast message
+        toast.warning('Vui lòng đăng nhập để mua hàng.')
+        return
+      }
+      const res = await addToCartMutation.mutateAsync({ user_id: profile.id })
       await addToCartItemsMutation.mutateAsync({
         cart_id: res.data.id,
         product_id: product?.id.toString(),
         quantity: buyCount
       })
       queryClient.invalidateQueries(['product'])
+      queryClient.invalidateQueries(['products'])
+      queryClient.invalidateQueries(['carts'])
       toast.success('Bạn đã mua sản phẩm thành công!')
       navigate(path.cart)
     } catch (error) {

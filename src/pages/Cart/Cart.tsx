@@ -17,6 +17,7 @@ import { AppContext } from 'src/contexts/app.context'
 import cartApi from 'src/apis/cart.api'
 import { CartItemData } from 'src/types/cart.type'
 import { formatCurrency } from 'src/utils/utils'
+import value from 'src/constants/value'
 const cx = classNames.bind(styles)
 
 type TableRowSelection<T> = TableProps<T>['rowSelection']
@@ -83,7 +84,7 @@ export default function CategoryList() {
   const { data: cartsData } = useQuery({
     queryKey: ['carts', queryConfig],
     queryFn: () => {
-      return cartApi.getCartByUserId({ size: Number.MAX_SAFE_INTEGER })
+      return cartApi.getCartByUserId({ size: value.MAX_INT })
     }
   })
 
@@ -97,6 +98,8 @@ export default function CategoryList() {
         price: cart.price
       }))
       .reverse() || []
+
+  console.log(data)
 
   //////////////////////////////////////////////////////////// PAGINATE ///////////////////////////////////////////////////////
   const pagination = {

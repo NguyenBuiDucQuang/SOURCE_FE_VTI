@@ -6,6 +6,7 @@ import categoryApi from 'src/apis/category.api'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import styles from './PartSearch.module.css'
 import classNames from 'classnames/bind'
+import value from 'src/constants/value'
 
 const cx = classNames.bind(styles)
 
@@ -46,7 +47,7 @@ export default function PartSearch() {
   const { data: categoriesData } = useQuery({
     queryKey: ['categories', queryConfig],
     queryFn: () => {
-      return categoryApi.getCategories({ size: Number.MAX_SAFE_INTEGER })
+      return categoryApi.getCategories({ size: value.MAX_INT })
     }
   })
 

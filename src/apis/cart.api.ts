@@ -33,7 +33,9 @@ const cartApi = {
     return http.post(URL_CART_ITEMS, body)
   },
   getCartByUserId(params: ParamsConfig) {
-    return http.get<SuccessResponse<CartItemData[]>>(`${URL_CART_ITEMS}`)
+    return http.get<SuccessResponse<CartItemData[]>>(`${URL_CART_ITEMS}`, {
+      params
+    })
   }
 }
 export default cartApi

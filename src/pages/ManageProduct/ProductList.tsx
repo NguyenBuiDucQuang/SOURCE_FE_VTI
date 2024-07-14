@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import ModalAddProduct from './ModalAddProduct'
 import ModalUpdateProduct from './ModalUpdateProduct'
 import categoryApi from 'src/apis/category.api'
+import value from 'src/constants/value'
 const cx = classNames.bind(styles)
 
 type TableRowSelection<T> = TableProps<T>['rowSelection']
@@ -181,7 +182,7 @@ export default function ProductList() {
   const { data: categoriesData } = useQuery({
     queryKey: ['categories', queryConfig],
     queryFn: () => {
-      return categoryApi.getCategories({ size: Number.MAX_SAFE_INTEGER })
+      return categoryApi.getCategories({ size: value.MAX_INT })
     }
   })
 

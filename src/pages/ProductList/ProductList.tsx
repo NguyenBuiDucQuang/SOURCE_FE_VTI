@@ -36,11 +36,13 @@ export default function ProductList() {
             </div>
             <div className='col-span-9'>
               <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-                {productsData.data.content.map((product) => (
-                  <div className='col-span-1' key={product.id}>
-                    <Product product={product} />
-                  </div>
-                ))}
+                {productsData.data.content
+                  // .filter((product) => product.number_of_products !== 0)
+                  .map((product) => (
+                    <div className='col-span-1' key={product.id}>
+                      <Product product={product} />
+                    </div>
+                  ))}
               </div>
               <Pagination queryConfig={queryConfig} pageSize={productsData.data.totalPages} />
             </div>
