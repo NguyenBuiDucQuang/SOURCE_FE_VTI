@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import productApi from 'src/apis/product.api'
 import purchaseApi from 'src/apis/purchase.api'
@@ -12,8 +12,13 @@ import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet-async'
 import { convert } from 'html-to-text'
 import { ParamsConfig } from 'src/types/product.type'
+import path from 'src/constants/path'
+import cartApi from 'src/apis/cart.api'
+import { AppContext } from 'src/contexts/app.context'
+import { toast } from 'react-toastify'
 
 export default function ProductDetail() {
+  const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
   const { t } = useTranslation(['product'])
   const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
@@ -35,7 +40,8 @@ export default function ProductDetail() {
     staleTime: 3 * 60 * 1000,
     enabled: Boolean(product)
   })
-  const addToCartMutation = useMutation(purchaseApi.addToCart)
+  const addToCartMutation = useMutation(cartApi.addCart)
+  const addToCartItemsMutation = useMutation(cartApi.addCartItem)
   const navigate = useNavigate()
 
   const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -78,15 +84,21 @@ export default function ProductDetail() {
   //   )
   // }
 
-  // const buyNow = async () => {
-  //   const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
-  //   const purchase = res.data.data
-  //   navigate(path.cart, {
-  //     state: {
-  //       purchaseId: purchase._id
-  //     }
-  //   })
-  // }
+  const buyNow = async () => {
+    try {
+      const res = await addToCartMutation.mutateAsync({ user_id: profile?.id })
+      await addToCartItemsMutation.mutateAsync({
+        cart_id: res.data.id,
+        product_id: product?.id.toString(),
+        quantity: buyCount
+      })
+      queryClient.invalidateQueries(['product'])
+      toast.success('Bạn đã mua sản phẩm thành công!')
+      navigate(path.cart)
+    } catch (error) {
+      toast.error('Bạn đã mua sản phẩm thất bại.')
+    }
+  }
 
   if (!product) return null
   return (
@@ -143,7 +155,7 @@ export default function ProductDetail() {
                 </div>
               </div>
               <div className='mt-8 flex items-center'>
-                <button
+                {/* <button
                   // onClick={addToCart}
                   className='flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5'
                 >
@@ -171,9 +183,9 @@ export default function ProductDetail() {
                     </g>
                   </svg>
                   Thêm vào giỏ hàng
-                </button>
+                </button> */}
                 <button
-                  // onClick={buyNow}
+                  onClick={buyNow}
                   className='fkex ml-4 h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90'
                 >
                   Mua ngay

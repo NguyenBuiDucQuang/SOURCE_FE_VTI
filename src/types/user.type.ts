@@ -9,4 +9,6 @@ export interface User {
   phoneNumber?: string
   password?: string
   avatarUrl?: string
+  id?: number
+  user_id?: number
 }

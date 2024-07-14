@@ -14,6 +14,7 @@ export interface SuccessResponse<Data> {
   totalPages: number
   size: number
   number: number
+  id: number
 }
 export interface ErrorResponse<Data> {
   message: string

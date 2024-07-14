@@ -25,10 +25,15 @@ export default function Product({ product }: Props) {
             {'>'}
             {product.category_name}
           </div>
-          <div className='mt-3 flex items-center'>
+          <div className='mt-3 flex flex-col items-start justify-start'>
             <div className='ml-1 truncate text-orange'>
               <span className='text-xs'>₫</span>
               <span className='text-sm'>{formatCurrency(product.price)}</span>
+            </div>
+            <div>
+              <span className='text-sm text-primaryColor underline-offset-1'>
+                {product.number_of_products === 0 ? 'Đã hết' : `${product.number_of_products} sản phẩm`}
+              </span>
             </div>
           </div>
         </div>

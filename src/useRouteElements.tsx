@@ -24,6 +24,7 @@ import ResetPageEmail from './pages/ResetPageEmail'
 const Login = lazy(() => import('./pages/Login'))
 const ProductList = lazy(() => import('./pages/ProductList'))
 const ProductListAdmin = lazy(() => import('./pages/ManageProduct'))
+const OrderListAdmin = lazy(() => import('./pages/ManageOrder'))
 const CategoryListAdmin = lazy(() => import('./pages/ManageCategory'))
 const AccountListAdmin = lazy(() => import('./pages/ManageAccount'))
 const Profile = lazy(() => import('./pages/Profile'))
@@ -147,6 +148,16 @@ export default function useRouteElements() {
               </Suspense>
             </AdminLayout>
           )
+        },
+        {
+          path: path.order,
+          element: (
+            <AdminLayout>
+              <Suspense>
+                <OrderListAdmin />
+              </Suspense>
+            </AdminLayout>
+          )
         }
       ]
     },
@@ -167,11 +178,11 @@ export default function useRouteElements() {
         {
           path: path.cart,
           element: (
-            <CartLayout>
+            <MainLayout>
               <Suspense>
                 <Cart />
               </Suspense>
-            </CartLayout>
+            </MainLayout>
           )
         },
         {
