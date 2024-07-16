@@ -6,4 +6,5 @@ export interface CartItemData {
   user_id?: number
   productname?: string
   price?: number
+  username?: string
 }

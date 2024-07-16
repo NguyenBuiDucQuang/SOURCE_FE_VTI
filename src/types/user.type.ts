@@ -6,7 +6,7 @@ export interface User {
   userName?: string
   firstName?: string
   lastName?: string
-  phoneNumber?: string
+  phoneNumber?: string | number
   password?: string
   avatarUrl?: string
   id?: number

@@ -32,6 +32,9 @@ const cartApi = {
   addCartItem(body: CartItemData) {
     return http.post(URL_CART_ITEMS, body)
   },
+  deleteCartItem(params: string) {
+    return http.delete(`${URL_CART_ITEMS}/${params}`)
+  },
   getCartByUserId(params: ParamsConfig) {
     return http.get<SuccessResponse<CartItemData[]>>(`${URL_CART_ITEMS}`, {
       params

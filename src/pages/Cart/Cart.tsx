@@ -32,15 +32,54 @@ interface DataType {
 export default function CategoryList() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
   const queryConfig = useQueryConfig()
   const queryClient = useQueryClient()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isModalOpen2, setIsModalOpen2] = useState(false)
-  const [detail, setDetail] = useState<Category>()
   const navigate = useNavigate()
   const [searchText, setSearchText] = useState('')
+
+  /////////////////////////////////////////////////////////CHECKBOX INDEX////////////////////////////////////////////
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log('selectedRowKeys changed: ', newSelectedRowKeys)
+    setSelectedRowKeys(newSelectedRowKeys)
+  }
+
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    selections: [
+      Table.SELECTION_ALL,
+      Table.SELECTION_INVERT,
+      Table.SELECTION_NONE,
+      {
+        key: 'odd',
+        text: 'Select Odd Row',
+        onSelect: (changeableRowKeys) => {
+          let newSelectedRowKeys = []
+          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
+            if (index % 2 !== 0) {
+              return false
+            }
+            return true
+          })
+          setSelectedRowKeys(newSelectedRowKeys)
+        }
+      },
+      {
+        key: 'even',
+        text: 'Select Even Row',
+        onSelect: (changeableRowKeys) => {
+          let newSelectedRowKeys = []
+          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
+            if (index % 2 !== 0) {
+              return true
+            }
+            return false
+          })
+          setSelectedRowKeys(newSelectedRowKeys)
+        }
+      }
+    ]
+  }
 
   //////////////////////////////////////////////////////NAME COLUMN, CONFIG COLUMN///////////////////////////////////////////
 
@@ -99,61 +138,46 @@ export default function CategoryList() {
       }))
       .reverse() || []
 
-  console.log(data)
-
   //////////////////////////////////////////////////////////// PAGINATE ///////////////////////////////////////////////////////
   const pagination = {
     showSizeChanger: true,
     pageSizeOptions: ['5', '10', '20', '50', '100']
   }
 
-  //////////////////////////////////////////////////////////// SEARCH AND FILTER ///////////////////////////////////////////////////////
-  const handleChange = (value: string) => {
-    navigate({
-      pathname: path.category,
-      search: createSearchParams({
-        ...queryConfig,
-        sort: `id,${value}`
-      }).toString()
-    })
-  }
+  //////////////////////////////////////////////////////////// DELETE ///////////////////////////////////////////////////////
+  const deleteCartsMutation = useMutation({
+    mutationFn: (params: string) => cartApi.deleteCartItem(params),
+    onSuccess: () => {
+      toast.success('Xóa thành công')
+      queryClient.invalidateQueries(['carts', queryConfig])
+      setSelectedRowKeys([])
+    },
+    onError: () => {
+      toast.error('Xóa thất bại')
+    }
+  })
 
-  const handleSearch = (value: string) => {
-    console.log('Search input:', value)
-    setSearchText(value)
-    navigate({
-      pathname: path.category,
-      search: createSearchParams({
-        ...queryConfig,
-        search: value
-      }).toString()
-    })
+  const handleDelete = () => {
+    const params = selectedRowKeys.join(',')
+    deleteCartsMutation.mutate(params)
   }
-
   return (
     <div className='container'>
       <h1 className='my-4 text-2xl'>Danh sách đơn hàng của bạn</h1>
-      {/* <Search
-        placeholder='input search text'
-        allowClear
-        enterButton='Search'
-        size='large'
-        className={cx('group__search')}
-        onSearch={handleSearch}
-      />
-      <div className={cx('group__select', 'mt-4 mb-4 flex items-center justify-between gap-4')}>
-        <Select
-          placeholder='--Sắp xếp theo ngày--'
-          onChange={handleChange}
-          size='large'
-          options={[
-            { value: 'asc', label: 'Sắp xếp mới nhất' },
-            { value: 'desc', label: 'Sắp xếp cũ nhất' }
-          ]}
-          className='w-1/2'
-        />
-      </div> */}
-      <Table columns={columns} dataSource={data} pagination={pagination} />
+      <Space className='my-2'>
+        <Popconfirm
+          title='Xóa đơn hàng'
+          description='Bạn có muốn xóa các đơn hàng này?'
+          okText='Yes'
+          cancelText='No'
+          onConfirm={handleDelete}
+        >
+          <Button size='large' danger className='w-32'>
+            Xóa
+          </Button>
+        </Popconfirm>
+      </Space>
+      <Table rowSelection={rowSelection} columns={columns} dataSource={data} pagination={pagination} />
     </div>
   )
 }

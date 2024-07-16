@@ -14,3 +14,7 @@ body {
   max-width: 1920px;
   overflow-x: auto;
 }
+
+.ant-btn-primary {
+  background: #1677ff;
+}

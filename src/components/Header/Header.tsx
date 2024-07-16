@@ -56,11 +56,12 @@ export default function Header() {
     },
     enabled: isAuthenticated
   })
+
   useEffect(() => {
-    if (cartsData) {
-      setNumberBuys(cartsData?.data.content.filter((cart: CartItemData) => cart.user_id == profile?.id).length)
+    if (cartsData && isAuthenticated && profile) {
+      setNumberBuys(cartsData?.data.content.filter((cart: CartItemData) => cart.user_id == profile.id).length)
     }
-  }, [cartsData, profile?.id])
+  }, [cartsData, isAuthenticated, profile])
   return (
     <div className='bg-white pb-5 pt-2 font-semibold text-black'>
       <div className='container'>

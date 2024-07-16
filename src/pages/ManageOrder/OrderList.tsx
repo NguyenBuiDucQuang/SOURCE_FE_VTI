@@ -25,6 +25,7 @@ interface DataType {
   name?: string
   quantity?: number
   price?: number
+  username?: string
 }
 
 export default function OrderList() {
@@ -45,14 +46,19 @@ export default function OrderList() {
       width: '10%'
     },
     {
+      title: 'Khách hàng',
+      dataIndex: 'username',
+      width: '20%'
+    },
+    {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
-      width: '25%'
+      width: '20%'
     },
     {
       title: 'Giá tiền',
       dataIndex: 'price',
-      width: '25%',
+      width: '20%',
       render: (_, action) => (
         <Space size='small' key={action.key}>
           <p> ₫{formatCurrency(action.price ?? 0)}</p>
@@ -62,7 +68,7 @@ export default function OrderList() {
     {
       title: 'Số lượng',
       dataIndex: 'quantity',
-      width: '20%'
+      width: '10%'
     },
     {
       title: 'Tổng tiền',
@@ -86,6 +92,7 @@ export default function OrderList() {
     cartsData?.data.content.map((cart: CartItemData) => ({
       key: cart.id,
       name: cart.productname,
+      username: cart.username,
       quantity: cart.quantity,
       price: cart.price
     })) || []
