@@ -44,5 +44,5 @@ export interface ParamsConfig {
   minPrice?: number | string
   maxPrice?: number | string
   sort?: 'asc' | 'desc'
-  categoryId?: number | string
+  category_id?: number | string
 }

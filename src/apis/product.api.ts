@@ -9,6 +9,11 @@ const productApi = {
       params
     })
   },
+  getProductsSuper(params: ParamsConfig) {
+    return http.get<SuccessResponse<Product[]>>(`${URL}`, {
+      params
+    })
+  },
   detailProduct(id: number) {
     return http.get<Product>(`${URL}/${id}`)
   },

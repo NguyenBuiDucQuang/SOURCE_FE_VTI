@@ -29,7 +29,7 @@ export default function PartSearch() {
       pathname: '',
       search: createSearchParams({
         ...queryConfig,
-        categoryId: value
+        category_id: value
       }).toString()
     })
   }

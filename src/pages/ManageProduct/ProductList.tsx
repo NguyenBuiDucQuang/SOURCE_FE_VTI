@@ -161,7 +161,7 @@ export default function ProductList() {
   const { data: productsData } = useQuery({
     queryKey: ['products', queryConfig],
     queryFn: () => {
-      return productApi.getProducts(queryConfig as ParamsConfig)
+      return productApi.getProductsSuper(queryConfig as ParamsConfig)
     }
   })
 
@@ -231,7 +231,7 @@ export default function ProductList() {
       pathname: path.product,
       search: createSearchParams({
         ...queryConfig,
-        categoryId: value
+        category_id: value
       }).toString()
     })
   }

@@ -53,7 +53,7 @@ export default function AsideFilter({ queryConfig }: Props) {
     navigate({
       pathname: path.home,
       search: createSearchParams({
-        ...omit(queryConfig, ['minPrice', 'maxPrice', 'sort', 'search', 'categoryId']),
+        ...omit(queryConfig, ['minPrice', 'maxPrice', 'sort', 'search', 'category_id']),
         page: '1',
         size: '10'
       }).toString()

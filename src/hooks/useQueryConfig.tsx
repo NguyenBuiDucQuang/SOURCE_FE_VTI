@@ -17,7 +17,7 @@ export default function useQueryConfig() {
       sort: queryParams.sort,
       minPrice: queryParams.minPrice,
       maxPrice: queryParams.maxPrice,
-      categoryId: queryParams.categoryId
+      category_id: queryParams.category_id
     },
     isUndefined
   )

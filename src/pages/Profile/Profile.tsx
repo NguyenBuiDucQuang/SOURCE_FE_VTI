@@ -151,10 +151,10 @@ export default function Profile() {
         <Form.Item
           label='SĐT'
           name='phoneNumber'
-          rules={[
-            { required: true, message: 'Vui lòng nhập số điện thoại!!!' },
-            { pattern: /^\d{9}$/, message: 'Số điện thoại phải gồm 9 chữ số!!!' }
-          ]}
+          // rules={[
+          //   { required: true, message: 'Vui lòng nhập số điện thoại!!!' },
+          //   { pattern: /^\d{9}$/, message: 'Số điện thoại phải gồm 9 chữ số!!!' }
+          // ]}
         >
           <Input />
         </Form.Item>
